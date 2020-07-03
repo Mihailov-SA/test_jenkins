@@ -1,7 +1,7 @@
 FROM node:12
 
 LABEL NAME="m3m3/hw1"
-LABEL VESION="1.0.4"
+LABEL VESION="1.0.5"
 LABEL MAINTAINER="Mihailov"
 
 
