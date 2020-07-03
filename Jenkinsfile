@@ -1,19 +1,30 @@
-node() {
-    stage('Checkout') {
-        git "https://github.com/Mihailov-SA/test_jenkins.git"
-        deleteDir() // Workdir cleanup
+pipeline {
+  environment {
+    registry = "m3m3/docker-test"
+    registryCredential = 'dockerhub'
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/Mihailov-SA/test_jenkins.git'
+      }
     }
-
-    stage('Build') {
-        sh "echo Building"
-        sh "echo 'Change Jenkinsfile'"
+    stage('Building image') {
+      steps{
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
     }
-
-    stage('Tests') {
-        sh "echo Testing"
-    }
-
-    stage('Push image') {
-        sh "echo Pushing"
+    stage('Push image to registry'){
+        steps{
+            script{
+            docker.withRegistry( '', registryCredential ) {
+                                                            dockerImage.push()
+                    }
+                }
+            }
+        }
     }
 }
